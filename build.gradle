@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+    //Reports: Clucumber report
+    id 'de.javaansehz.cluecumber-report-gradle-plugin' version "1.1.5"
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/junit/junit
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
+    // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+    implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.141.59'
+    // https://mvnrepository.com/artifact/io.github.bonigarcia/webdrivermanager/4.2.2
+    implementation("io.github.bonigarcia:webdrivermanager:4.2.2")
+
+    // https://mvnrepository.com/artifact/io.cucumber/cucumber-java
+    implementation group: 'io.cucumber', name: 'cucumber-java', version: '6.9.1'
+
+    testImplementation group: 'io.cucumber', name: 'cucumber-junit', version: '6.6.1'
+
+    implementation group: 'io.cucumber', name: 'cucumber-picocontainer', version: '6.8.1'
+
+    implementation 'de.monochromata.cucumber:reporting-plugin:4.0.84'
+
+    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+    implementation group: 'com.jayway.jsonpath', name: 'json-path', version: '2.1.0'
+
+    task uiTests(type: Test) {
+        include '**/RunCucumberTests*'
+    }
+    cluecumberReports {
+        sourceJsonReportDirectory = "reports/cucumber-reports"
+        generatedHtmlReportDirectory = "reports/clucumber-report"
+        expandBeforeAfterHooks = true
+    }
+
+
+    task uiRerunTests(type: Test) {
+        include '**/ReRunCucumberTests*'
+    }
+    uiRerunTests.finalizedBy generateCluecumberReports
+}
